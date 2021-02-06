@@ -32,6 +32,9 @@ trait Zigbee2DeCONZHelper
             case 'Z2D_offset':
                 $this->setOffset($Value);
                 break;
+            case 'Z2D_delay':
+                $this->setDelay($Value);
+                break;
             case 'Z2D_sensitivity':
                 $this->setSensitivity($Value);
                 break;
@@ -219,6 +222,18 @@ trait Zigbee2DeCONZHelper
         $this->SetStateDeconz(json_encode($data));
     }
 
+    public function SetColorEx(int $color, int $Transitiontime)
+    {
+		if($this->ReadPropertyBoolean("Status"))$this->SetValue('Z2D_Color',$value);
+        $RGB = $this->HexToRGB($color);
+        $cie = $this->RGBToCIE($RGB[0], $RGB[1], $RGB[2]);
+		$data['on'] = true;
+		$data['xy'] = array($cie['x'], $cie['y']);
+		$data['bri'] = $cie['bri'];
+		$data['transitiontime'] = $Transitiontime;
+        $this->SetStateDeconz(json_encode($data));
+    }
+
     public function setTemperature(float $value)
     {
         if($value <  6)$value =  6;
@@ -247,6 +262,17 @@ trait Zigbee2DeCONZHelper
         if($value >  5) $value =  5;
 		$this->SetValue('Z2D_offset',$value);
 		$this->SetConfig('offset', (string) ($value * 100));
+<<<<<<< HEAD
+=======
+    }
+
+    public function setDelay(int $value)
+    {
+        if($value <   0)$value =  0;
+        if($value > 65535)$value = 65535;
+		$this->SetValue('Z2D_delay',$value);
+		$this->SetConfig('delay', (string) ($value));
+>>>>>>> ddeefa43a9d670860177e84d6ce5a9746155710e
     }
 
     public function SetConfig(string $parameter, string $value)
@@ -264,7 +290,7 @@ trait Zigbee2DeCONZHelper
 		$result = $this->GetStateDeconz();
 		if($result){
 	        $Buffer = json_decode($result)->Buffer;
-			$data = json_decode(utf8_decode($Buffer));
+			$data = json_decode($Buffer);
 			if (property_exists($data, 'config')) {
 			    $config = $data->config;
 				return(json_encode($config));
@@ -336,7 +362,19 @@ trait Zigbee2DeCONZHelper
 
 	    $DataJSON = json_encode($Data, JSON_UNESCAPED_SLASHES);
         $this->SendDebug('Sended', $DataJSON, 0);
-	    $this->SendDebug('Result', $this->SendDataToParent($DataJSON), 0);
+	    $Result = $this->SendDataToParent($DataJSON);
+
+		if(!$Result){
+			$this->LogMessage($this->Translate("Instance")." #".$this->InstanceID.": Gateway-Server-Error",KL_ERROR);
+			return;
+		}
+
+		$messages = json_decode($Result);
+		foreach($messages as $message){
+			if(property_exists($message, "error")){
+				$this->LogMessage($this->Translate("Instance")." #".$this->InstanceID.": ".$message->error->description,KL_ERROR);
+			}
+		}
     }
 
 	protected function GetStateDeconz()

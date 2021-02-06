@@ -2,62 +2,79 @@
 	class DeconzConfig extends IPSModule
 	{
 
+#=====================================================================================
 		public function Create() 
+#=====================================================================================
 		{
 			//Never delete this line!
 			parent::Create();
+	        $this->RegisterAttributeString("elements", "");
 
 			//Connect to available deconz gateway
 			$this->ConnectParent("{9013F138-F270-C396-09D6-43368E390C5F}");
 		}
 
+#=====================================================================================
 		public function Destroy(){
+#=====================================================================================
 		    //Never delete this line!
 		    parent::Destroy();
 
 		}
     
+#=====================================================================================
 		public function ApplyChanges()
+#=====================================================================================
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
 		}
+
+#=====================================================================================
+	    public function ReceiveData($JSONString)
+#=====================================================================================
+		{
+		    $data = json_decode($JSONString);
+			$this->SendDebug("ReceiveData", $data->Buffer, 0);
+		    $this->WriteAttributeString("elements", $data->Buffer);
+			return true;
+		}
 		
+#=====================================================================================
 		private function GetElements()
+#=====================================================================================
 		{
 			$Buffer['command'] 	= '';
 			$Buffer['method'] 	= 'GET';
 			$Buffer['data'] 	= '';
 
-			$Data['DataID'] 	= '{875B91AC-45F1-9757-30F6-BF71445B2BDB}';
+			$Data['DataID'] 	= '{F51DECC3-17B8-C099-0EAF-A911EB2CDFB8}';
 			$Data['Buffer'] 	= json_encode($Buffer, JSON_UNESCAPED_SLASHES);
 
-			$result				= $this->SendDataToParent(json_encode($Data, JSON_UNESCAPED_SLASHES));
-			$this->SendDebug("Received Configuration", $result, 0);
-
-		    if ($result=="")return;
-			$data = json_decode(utf8_decode($result));
-		    if (!property_exists($data, 'config'))return;
+			$result	= $this->SendDataToParent(json_encode($Data, JSON_UNESCAPED_SLASHES));
+		    if (!$result)return;
+			$data = json_decode($this->ReadAttributeString("elements"));
+			if(json_last_error() !== 0 || !property_exists($data, 'config')){
+				$this->LogMessage($this->Translate("Instance")." #".$this->InstanceID.": ".$this->Translate("Received Data unreadable"),KL_ERROR);
+				return;
+			}
 
 #----------------------------------------------------------------
 #	Search for created Devices
 #----------------------------------------------------------------
 
-			$ParentID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
-			$Parent = IPS_GetInstance($ParentID)['ModuleInfo']['ModuleID'];
+			$GatewayID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
 			$Devices = IPS_GetInstanceListByModuleType(3); 			// all Devices
 
 			$Created = array();
 			foreach ($Devices as $Device){
 				$ParentID = IPS_GetInstance($Device)['ConnectionID'];
-				if($ParentID > 0){
-					if(@IPS_GetInstance($ParentID)['ModuleInfo']['ModuleID'] == $Parent){
+                if($ParentID == $GatewayID){
 					    $Config = json_decode(IPS_GetConfiguration($Device));
 					    if (property_exists($Config, 'DeviceID')) {
 					        $Created[$Config->DeviceID] = $Device;
 					    }
-					}
-				}
+                }
 			}
 
 #----------------------------------------------------------------
@@ -146,7 +163,9 @@
 			return json_encode($Values);
 		}
 	 
+#=====================================================================================
 		public function GetConfigurationForm() {
+#=====================================================================================
 			$Values = json_decode($this->GetElements());	
 			$this->SendDebug("Elements", json_encode($Values), 0);
 	        $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);

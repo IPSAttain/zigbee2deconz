@@ -8,11 +8,9 @@
   <body>
 	<h1>IPS-Zigbee-Bibliothek für die Einbindung von Zigbee-Geräten in IP-Symcon via DeCONZ</h1>
 	<h2>Grundsätzliches</h2>
-	Die Bibliothek regelt die Kommunikation zwischen der DeCONZ-Rest-API von Dresden Elektronik und IP-Symcon. Zur Nutzung ist die Hardware von Dresden Elektronik und eine funktionsfähige Installation der Software DeCONZ erforderlich. Die Handhabung von Hard- und Software, das Einlernen kompatibler Geräte so wie eine Liste kompatibler Geräte ist <a href="https://www.dresden-elektronik.de/funktechnik/products/software/pc/deconz/">hier</a> sehr gut beschrieben. Hierauf wird in der Anleitung nicht weiter eingegangen.<br><br>
-	<b>Bitte umbedingt die aktuelle Soft- und Firmware benutzen. Ältere Versionen der DeCONZ-Rest-API bieten noch keinen Websocket-Server, der für die Umsetzung benötigt wird.</b><br><br>	
+	Die Bibliothek regelt die Kommunikation zwischen der DeCONZ-Rest-API von Dresden Elektronik und IP-Symcon. Zur Nutzung ist die Hardware von Dresden Elektronik und eine funktionsfähige Installation der Software DeCONZ erforderlich. Die Handhabung von Hard- und Software, das Einlernen kompatibler Geräte so wie eine Liste kompatibler Geräte ist <a href="https://www.dresden-elektronik.de/funk/software/deconz.html">hier</a> sehr gut beschrieben. Hierauf wird in der Anleitung nicht weiter eingegangen.<br><br>
+	<b>Bitte umbedingt die aktuelle Soft- und Firmware benutzen. Ältere Versionen der DeCONZ-Rest-API bieten noch keinen Websocket-Server, der für die Umsetzung benötigt wird.</b><br><br>
 	Die Installation der Bibliothek wird <a href="https://www.symcon.de/service/dokumentation/komponenten/verwaltungskonsole/module-store/">hier</a> beschrieben.
-	<h2>Danksagung</h2>
-	Das Gateway wurde auf Basis des Websocket-Client von Nall-Chan (<a href="https://github.com/Nall-chan/IPSNetwork">IPSNetwork</a>) verwirklicht. Großen Dank an Nall-Chan für die sehr gute Bibliothek und für die Erlaubnis, diese in meiner Bibliothek nutzen zu dürfen.
 	<h2>Lizenz</h2>
 	<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />Dieses Werk ist lizenziert unter einer <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>
 	<h2>Changelog</h2>
@@ -120,7 +118,41 @@
 			Fix: Teilweise fehlendes Profil Sensitivity<br>
 			Fix: Batteriestatus für Ikea Kadrilj</td>
 	  </tr>
+<<<<<<< HEAD
+=======
+	  <tr>
+		<td>V1.22</td>
+		<td>Neu: Unterstützung des Xiaomi Mi Aqara Zauberwürfel<br>
+			Neu: Config Delay für Bewegungsmelder</td>
+	  </tr>
+	  <tr>
+		<td>V1.23</td>
+		<td>Fix: Fehler in Konfigurator-Liste bei Einsatz mehrerer Gateways</td>
+	  </tr>
+	  <tr>
+		<td>V1.24</td>
+		<td>Neu: Z2D_SetColorEx</td>
+	  </tr>
+	  <tr>
+		<td>V2.00</td>
+		<td><b>Voraussetzung IP-Symcon Version 5.5</b><br>
+			Neu: Umstellung auf nativen IPS-Websocket-Client<br>
+			Neu: Maßnahmen zur Reduzierung der Prozessorlast<br>
+			Neu: Log-Meldungen bei Fehlern</td>
+	  </tr>
+	  <tr>
+		<td>V2.01</td>
+		<td>Fix: PHP-Error Gateway</td>
+	  </tr>
+      <tr>
+		<td>V2.02</td>
+		<td>Fix: PHP-Error bei Verbindungsstörung zum Server</td>
+	  </tr>
+      <tr>
+		<td>V2.03</td>
+		<td>Fix: Profilname doppelt belegt</td>
+	  </tr>
+>>>>>>> ddeefa43a9d670860177e84d6ce5a9746155710e
 	</table>
   </body>
 </html>
-
